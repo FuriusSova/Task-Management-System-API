@@ -26,6 +26,18 @@ router.post('/createTask', async (req, res, next) => {
 
 // Marking task as done
 router.get('/done', async (req, res, next) => {
+    if (req.cookies.JWToken) {
+        const token = req.cookies.JWToken;
+        const data = tokenService.validateToken(token);
+        if (data.message == "jwt expired") {
+            res.json({ message: "Token has been expired, please login again" })
+            return;
+        }
+    } else {
+        res.json({ message: "You should log in" })
+        return;
+    }
+
     const task = await Task.findOne({ where: { title: req.body.title } });
     if (task) {
         task.isDone = true;
@@ -40,6 +52,18 @@ router.get('/done', async (req, res, next) => {
 
 // Unmarking task as done
 router.get("/notDone", async (req, res) => {
+    if (req.cookies.JWToken) {
+        const token = req.cookies.JWToken;
+        const data = tokenService.validateToken(token);
+        if (data.message == "jwt expired") {
+            res.json({ message: "Token has been expired, please login again" })
+            return;
+        }
+    } else {
+        res.json({ message: "You should log in" })
+        return;
+    }
+
     const task = await Task.findOne({ where: { title: req.body.title } });
     if (task) {
         task.isDone = false;
@@ -54,6 +78,18 @@ router.get("/notDone", async (req, res) => {
 
 // Editing task
 router.put('/editTask', async (req, res, next) => {
+    if (req.cookies.JWToken) {
+        const token = req.cookies.JWToken;
+        const data = tokenService.validateToken(token);
+        if (data.message == "jwt expired") {
+            res.json({ message: "Token has been expired, please login again" })
+            return;
+        }
+    } else {
+        res.json({ message: "You should log in" })
+        return;
+    }
+
     const task = await Task.findOne({ where: { title: req.body.title } });
     if (task) {
         if (req.body.updateTitle) task.title = req.body.updateTitle;
@@ -71,6 +107,18 @@ router.put('/editTask', async (req, res, next) => {
 
 // Deleting task
 router.delete('/deleteTask', async (req, res, next) => {
+    if (req.cookies.JWToken) {
+        const token = req.cookies.JWToken;
+        const data = tokenService.validateToken(token);
+        if (data.message == "jwt expired") {
+            res.json({ message: "Token has been expired, please login again" })
+            return;
+        }
+    } else {
+        res.json({ message: "You should log in" })
+        return;
+    }
+
     const task = await Task.destroy({ where: { title: req.body.title } });
     res.statusCode = 200;
     res.json({ message: "Task has been deleted" });
